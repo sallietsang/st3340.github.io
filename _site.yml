@@ -17,3 +17,4 @@ navbar:
       href: https://www.linkedin.com/in/sallie-tsang-9135a6199/?originalSubdomain=hk
 output:
   html_document:
+      theme: cerulean
