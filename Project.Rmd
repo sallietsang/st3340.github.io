@@ -1,17 +1,84 @@
 ---
-title: "Project"
+title: "Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
 ---
 
-Sometimes I like to do projects and then post them on the internet for the whole world to benefit!
-here's some examples. 
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(p8105.datasets)
+library(plotly)
+```
 
-## [Data Visualization in R](https://github.com/sallietsang/p8105_hw3_st3340)
+```{r}
+data("instacart")
+ instacart = 
+   instacart%>% 
+   # select 1000 samples
+   sample_n(1000)
 
-- An RMarkdown presentation on the common mistakes made in visualization and how to fix them.
-- Includes a GitHub repo for access to all the code.
-- Look at how high quality my work is, hire and or collaborate with me. 
+aisle_ordered = instacart %>%
+  count(aisle) %>%
+  rename(order_sum = n) %>%
+  arrange(desc(order_sum))
+```
+Column {data-width=650}
+-----------------------------------------------------------------------
 
-##Statistical Plots
+### Chart A: Plotly scatterplot showing the distribution of the order sum in different aisles 
+```{r}
+#this is a scatterplot showing the distribution of the order sum of different aisle 
+aisle_ordered%>%
+  plot_ly(x= ~aisle,
+          y=~ order_sum, 
+          type = "scatter",
+          mode = "markers",
+          marker = list(size=5),
+          color = ~aisle,
+          colors = "viridis",
+          alpha = 0.5)%>%
+  layout(title = "Distribution of order sum")
 
-- Interactive plots of things
-- I can code!
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+
+### Chart B: Plotly barchart
+```{r}
+aisle_ordered%>%
+    mutate(aisle = as.factor(aisle),
+         aisle = fct_reorder(aisle, order_sum))%>%
+  plot_ly(x= ~aisle,
+          y=~ order_sum, 
+          type ="bar",
+          mode = "markers",
+          marker = list(size=5),
+          color = ~aisle,
+          colors = "viridis",
+          alpha = 0.5)%>%
+  layout(title = "Distribution of order sum")
+```
+
+### Chart C: Plotly boxplot
+```{r}
+instacart %>%
+   group_by(aisle,product_name) %>% 
+   summarize(order_sum = sum(order_number)) %>% 
+   mutate(
+     aisle = as.factor(aisle),
+     aisle = fct_reorder(aisle, order_sum)) %>% 
+   plot_ly(
+     x = ~ aisle,
+     y = ~ order_sum,
+     type = "box",
+     color = ~aisle,
+     colors = "viridis",
+          alpha = 0.5)%>%
+  layout(title = "Distribution of order sum")
+```
+

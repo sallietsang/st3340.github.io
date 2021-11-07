@@ -7,7 +7,7 @@ navbar:
       href: index.html
     - text: "Resume"
       href: resume.html
-    - text: "Project"
+    - text: "Dashboard"
       href: Project.html
     - icon: fa-envelope fa-lg
       href: mailto:sallietsang@gmail.com
